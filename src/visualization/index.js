@@ -1,5 +1,5 @@
 var lodash = require('lodash')
-var THREE = require('../../vendor/three')
+var THREE = require('three')
 
 var vertexShader = require('./shaders/vertex.vert')
 var fragmentShader = require('./shaders/fragment.frag')
