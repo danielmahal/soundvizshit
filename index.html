@@ -14,13 +14,21 @@
             right: 0;
             width: 200px;
             height: 100px;
-            border-top: 1px red solid;
+            border-top: 1px rgba(180, 0, 255, 0.4) solid;
+            background: rgba(255, 0, 255, 0.1);
         }
 
         .eq .bar {
             position: absolute;
-            background: white;
+            background: rgba(255, 0, 255, 0.4);
             bottom: 0;
+        }
+
+        .visualization,
+        .debug {
+            position: absolute;
+            top: 0;
+            left: 0;
         }
 
         canvas {
@@ -31,7 +39,49 @@
     <script defer src="build/index.js"></script>
 </head>
 <body>
-    <canvas></canvas>
+    <div class="visualization"></div>
+    <canvas class="debug"></canvas>
     <div class="eq"></div>
+
+    <script id="vertexShader" type="x-shader/x-vertex">
+            void main() {
+                gl_Position = vec4( position, 1.0 );
+            }
+        </script>
+
+        <script id="fragmentShader" type="x-shader/x-fragment">
+            #ifdef GL_ES
+            precision highp float;
+            #endif
+
+            #define COUNT 20
+            #define RADIUS 20.0
+            #define SMOOTHNESS 1.0
+
+            uniform vec2 points[COUNT];
+            uniform vec2 resolution;
+            uniform float time;
+
+            void main() {
+
+                 vec2 position = gl_FragCoord.xy;
+                 float b = 0.0;
+
+                 for (int i = 0; i < COUNT; i += 1) {
+                      vec2 p = points[i] * resolution;
+                      float d = 1.0 - clamp(distance(p, position) / RADIUS, 0.0, 1.0);
+
+                      // if(d > 0.0) {
+                      //   b = 1.0;
+                      // }
+
+                      b += pow(d, SMOOTHNESS);
+                 }
+
+                 vec3 c = b * vec3(0.0, 1.0, 1.0);
+
+                 gl_FragColor = vec4(c, 1.0);
+            }
+        </script>
 </body>
 </html>

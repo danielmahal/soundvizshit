@@ -8,7 +8,7 @@ function createBars(count) {
     var element = document.createElement('div')
 
     element.className = 'bar';
-    element.style.width = (100 / count) + '%'
+    element.style.width = 'calc(' + (100 / count) + '% - 1px)'
     element.style.left = (100 / count) * i + '%'
 
     container.appendChild(element)
