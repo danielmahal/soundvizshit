@@ -26,6 +26,18 @@ module.exports.draw = function(agents) {
     context.save()
     context.translate(agent.position.x * scale.x, agent.position.y * scale.y)
 
+    // Debug first
+    switch(agent.mode) {
+      case 'hunt':
+        context.fillStyle = 'red'
+      break;
+      case 'run':
+        context.fillStyle = 'green'
+      break;
+      default:
+        context.fillStyle = 'white'
+    }
+
     // Dot
     context.beginPath()
     context.arc(0, 0, 3, 0, Math.PI * 2)
@@ -41,12 +53,17 @@ module.exports.draw = function(agents) {
 
     context.restore()
 
-    context.strokeStyle = 'rgba(255, 0, 0, 0.2)'
+    if(agent.prey) {
+      if(agent.mode === 'hunt') {
+        context.strokeStyle = 'rgba(255, 0, 0, 0.2)'
+      } else {
+        context.strokeStyle = 'rgba(255, 255, 255, 0.1)'
+      }
 
-    // Prey link
-    context.beginPath()
-    context.moveTo(agent.position.x * scale.x, agent.position.y * scale.y)
-    context.lineTo(agent.prey.position.x * scale.x, agent.prey.position.y * scale.y)
-    context.stroke()
+      context.beginPath()
+      context.moveTo(agent.position.x * scale.x, agent.position.y * scale.y)
+      context.lineTo(agent.prey.position.x * scale.x, agent.prey.position.y * scale.y)
+      context.stroke()
+    }
   })
 }
