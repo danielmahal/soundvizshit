@@ -1,0 +1,20 @@
+{
+  "name": "soundvizshit",
+  "version": "1.0.0",
+  "description": "",
+  "dependencies": {
+    "lodash": "^2.4.1",
+    "nws": "^0.5.1",
+    "raw-loader": "^0.5.1",
+    "webpack": "^1.4.14"
+  },
+  "scripts": {
+    "dev": "./node_modules/.bin/nws & ./node_modules/.bin/webpack -w --devtool eval"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/danielmahal/soundvizshit.git"
+  },
+  "author": "",
+  "license": "MIT"
+}

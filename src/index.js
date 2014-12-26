@@ -1,24 +1,24 @@
-var audioInput = require('./audioInput')
-var eq = require('./eq')
+var audio = require('./audio/input')
+var eq = require('./audio/eq')
 var simulation = require('./simulation')
-var debug = require('./debug')
+var simulationDebug = require('./simulation/debug')
 var visualization = require('./visualization')
 
 function setup() {
-  audioInput.openUserInput()
+  audio.openUserInput()
 }
 
 function update() {
   window.requestAnimationFrame(update);
 
-  var bands = audioInput.getBands(20)
+  var bands = audio.getBands(20)
 
   eq.update(bands)
   simulation.update(bands)
 
   var agents = simulation.getAgents()
 
-  debug.draw(agents)
+  simulationDebug.draw(agents)
   visualization.draw(agents)
 }
 

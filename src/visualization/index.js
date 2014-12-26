@@ -1,12 +1,15 @@
 var lodash = require('lodash')
-var THREE = require('./vendor/three')
+var THREE = require('../../vendor/three')
+
+var vertexShader = require('./shaders/vertex.vert')
+var fragmentShader = require('./shaders/fragment.frag')
 
 var container = document.querySelector('.visualization')
 
 var uniforms = {
   time: { type: "f", value: 1.0 },
   resolution: { type: "v2", value: new THREE.Vector2() },
-  points: { type: "v2v", value: [new THREE.Vector2(0.1, 0.1)] }
+  points: { type: "v2v", value: [] }
 }
 
 function updateSize() {
@@ -22,8 +25,8 @@ var geometry = new THREE.PlaneBufferGeometry( 2, 2 )
 
 var material = new THREE.ShaderMaterial( {
   uniforms: uniforms,
-  vertexShader: document.getElementById('vertexShader').textContent,
-  fragmentShader: document.getElementById('fragmentShader').textContent
+  vertexShader: vertexShader,
+  fragmentShader: fragmentShader
 })
 
 var mesh = new THREE.Mesh(geometry, material)
