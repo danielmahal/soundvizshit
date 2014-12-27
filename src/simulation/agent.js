@@ -22,8 +22,25 @@ Agent.prototype.getDistanceToPeer = function(peer) {
   return this.position.distance(peer.position);
 }
 
-Agent.prototype.findPrey = function(peers) {
-  return this.findNearestPeer(peers)
+Agent.prototype.findPrey = function(peers, count) {
+
+
+  return closest
+
+  // return [this.findNearestPeer(peers)]
+}
+
+Agent.prototype.mapClosest = function(peers) {
+  var distanceMap = lodash.map(peers, function(peer) {
+    return {
+      distance: this.getDistanceToPeer(peer),
+      peer: peer
+    }
+  }, this)
+
+  var closestMap = lodash.sortBy(distanceMap, 'distance')
+
+  return lodash.pluck(closestMap, 'peer')
 }
 
 Agent.prototype.compareMomentum = function(peer) {
@@ -31,7 +48,7 @@ Agent.prototype.compareMomentum = function(peer) {
 }
 
 Agent.prototype.getFearOfPeer = function(peer) {
-  return 1 - Math.pow(this.getDistanceToPeer(peer), 2) * this.compareMomentum(peer)
+  return 1 - Math.pow(this.getDistanceToPeer(peer), 1.2) * this.compareMomentum(peer)
 }
 
 Agent.prototype.getFear = function(peers) {
@@ -51,6 +68,20 @@ Agent.prototype.findNearestPeer = function(peers) {
 
     return closest
   }, null, this)
+}
+
+Agent.prototype.rotateAway = function(target, multiplier) {
+  var diff = ((Math.atan2(this.position.y - target.y, this.position.x - target.x)) - this.angle);
+
+  while(diff < -Math.PI) {
+    diff += Math.PI * 2;
+  }
+
+  while(diff > Math.PI) {
+    diff -= Math.PI * 2;
+  }
+
+  this.angle += diff * multiplier;
 }
 
 Agent.prototype.rotateTowards = function(target, multiplier) {

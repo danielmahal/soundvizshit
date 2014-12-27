@@ -1,4 +1,5 @@
 var lodash = require('lodash')
+var Vector = require('victor')
 
 var agent = require('./agent')
 
@@ -13,9 +14,9 @@ module.exports.update = function(input) {
   }
 
   agents.forEach(function(agent, i) {
-    agent.energy = input[i] * 0.01
+    agent.energy = input[i]
 
-    agent.momentum += agent.energy
+    agent.momentum += agent.energy * 0.01
     agent.momentum *= 0.5
     agent.momentum = Math.max(0.0002, agent.momentum)
 
@@ -27,10 +28,10 @@ module.exports.update = function(input) {
 
     var peers = lodash.difference(agents, [agent])
 
-    // agent.fear = agent.getFear(peers)
     agent.fear += (agent.getFear(peers) - agent.fear) * 0.6
     agent.mode = 'idle'
     agent.prey = null
+    agent.closest = agent.mapClosest(peers)
 
     if(agent.fear < 0.2) {
       agent.mode = 'hunt'
@@ -41,24 +42,38 @@ module.exports.update = function(input) {
     }
 
     if(agent.mode === 'hunt') {
-      agent.prey = agent.findPrey(peers)
+      agent.prey = lodash.first(agent.closest, 1)
     }
 
     if(agent.mode === 'idle') {
-      // agent.prey = agent.findPrey(3, peers)
+      agent.prey = lodash.first(agent.closest, 3)
+    }
+
+    if(agent.mode === 'run') {
+      var from = lodash.first(agent.closest, 3)
+
+      lodash.forEach(from, function(peer) {
+        agent.rotateAway(peer.position, 0.05)
+      })
     }
 
     agent.angle += Math.sin(time * 0.1) * 0.001 * (i + 10)
 
-    if(agent.mode === 'hunt') {
-      agent.rotateTowards(agent.prey.position, 0.1)
+    if(agent.prey) {
+      agent.prey.forEach(function(prey) {
+        agent.rotateTowards(prey.position, 0.05)
+      })
+    }
 
-      if(agent.position.distance(agent.prey.position) < 0.01) {
-        if(agent.momentum > agent.prey.momentum) {
-          agent.prey.position.x = Math.random()
-          agent.prey.position.y = Math.random()
+    if(agent.mode === 'hunt') {
+      agent.prey.forEach(function(prey) {
+        if(agent.position.distance(prey.position) < 0.01) {
+          if(agent.momentum > prey.momentum) {
+            prey.position.x = Math.random()
+            prey.position.y = Math.random()
+          }
         }
-      }
+      })
     }
   })
 }

@@ -60,10 +60,12 @@ module.exports.draw = function(agents) {
         context.strokeStyle = 'rgba(255, 255, 255, 0.1)'
       }
 
-      context.beginPath()
-      context.moveTo(agent.position.x * scale.x, agent.position.y * scale.y)
-      context.lineTo(agent.prey.position.x * scale.x, agent.prey.position.y * scale.y)
-      context.stroke()
+      agent.prey.forEach(function(prey) {
+        context.beginPath()
+        context.moveTo(agent.position.x * scale.x, agent.position.y * scale.y)
+        context.lineTo(prey.position.x * scale.x, prey.position.y * scale.y)
+        context.stroke()
+      })
     }
   })
 }

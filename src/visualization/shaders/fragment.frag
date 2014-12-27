@@ -3,7 +3,7 @@
 #endif
 
 #define COUNT 20
-#define RADIUS 20.0
+#define RADIUS 10.0
 #define SMOOTHNESS 1.0
 
 uniform vec2 points[COUNT];
