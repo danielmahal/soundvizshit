@@ -9,7 +9,8 @@ var container = document.querySelector('.visualization')
 var uniforms = {
   time: { type: "f", value: 1.0 },
   resolution: { type: "v2", value: new THREE.Vector2() },
-  points: { type: "v2v", value: [] }
+  points: { type: "v2v", value: [] },
+  sizes: { type: "fv1", value: [] }
 }
 
 function updateSize() {
@@ -44,6 +45,10 @@ module.exports.draw = function(agents) {
 
   uniforms.points.value = agents.map(function(agent) {
     return new THREE.Vector2(agent.position.x, 1 - agent.position.y)
+  })
+
+  uniforms.sizes.value = agents.map(function(agent) {
+    return agent.size.toFixed(2)
   })
 
   renderer.render(scene, camera);

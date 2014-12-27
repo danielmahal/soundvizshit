@@ -7,6 +7,7 @@
 #define SMOOTHNESS 1.0
 
 uniform vec2 points[COUNT];
+uniform float sizes[COUNT];
 uniform vec2 resolution;
 uniform float time;
 
@@ -16,7 +17,7 @@ void main() {
 
   for (int i = 0; i < COUNT; i += 1) {
     vec2 p = points[i] * resolution;
-    float d = 1.0 - clamp(distance(p, position) / RADIUS, 0.0, 1.0);
+    float d = 1.0 - clamp(distance(p, position) / (RADIUS + sizes[i]), 0.0, 1.0);
 
     b += pow(d, SMOOTHNESS);
   }

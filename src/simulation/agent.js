@@ -14,20 +14,13 @@ var Agent = function(params) {
   this.angle = params.angle || Math.random() * Math.PI * 2
   this.fear = 0
   this.energy = 0
+  this.size = 1
 
   this.momentum = 0
 }
 
 Agent.prototype.getDistanceToPeer = function(peer) {
   return this.position.distance(peer.position);
-}
-
-Agent.prototype.findPrey = function(peers, count) {
-
-
-  return closest
-
-  // return [this.findNearestPeer(peers)]
 }
 
 Agent.prototype.mapClosest = function(peers) {
@@ -43,12 +36,17 @@ Agent.prototype.mapClosest = function(peers) {
   return lodash.pluck(closestMap, 'peer')
 }
 
-Agent.prototype.compareMomentum = function(peer) {
-  return Math.max(this.momentum, 0.001) / Math.max(peer.momentum, 0.001)
+Agent.prototype.compareParameter = function(peer, parameter) {
+  return Math.max(this[parameter], 0.001) / Math.max(peer[parameter], 0.001)
 }
 
 Agent.prototype.getFearOfPeer = function(peer) {
-  return 1 - Math.pow(this.getDistanceToPeer(peer), 1.2) * this.compareMomentum(peer)
+  var distanceFactor = Math.pow(this.getDistanceToPeer(peer), 2)
+  var momentumFactor = Math.pow(this.compareParameter(peer, 'momentum'), 2)
+  var sizeFactor = Math.pow(this.compareParameter(peer, 'size'), 2)
+  var fear = 1 - distanceFactor * ((momentumFactor + sizeFactor) / 2)
+
+  return fear;
 }
 
 Agent.prototype.getFear = function(peers) {
@@ -96,10 +94,6 @@ Agent.prototype.rotateTowards = function(target, multiplier) {
   }
 
   this.angle += diff * multiplier;
-}
-
-Agent.prototype.calculateKillingPotential = function(peer) {
-
 }
 
 module.exports.create = function(params) {
