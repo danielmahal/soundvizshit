@@ -42,9 +42,9 @@ Agent.prototype.compareParameter = function(peer, parameter) {
 
 Agent.prototype.getFearOfPeer = function(peer) {
   var distanceFactor = Math.pow(this.getDistanceToPeer(peer), 2)
-  var momentumFactor = Math.pow(this.compareParameter(peer, 'momentum'), 2)
+  var energyFactor = Math.pow(this.compareParameter(peer, 'energy'), 2)
   var sizeFactor = Math.pow(this.compareParameter(peer, 'size'), 2)
-  var fear = 1 - distanceFactor * ((momentumFactor + sizeFactor) / 2)
+  var fear = 1 - distanceFactor * ((energyFactor + sizeFactor) / 2)
 
   return fear;
 }

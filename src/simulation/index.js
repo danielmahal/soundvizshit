@@ -22,22 +22,18 @@ module.exports.update = function(input) {
 
     var peers = lodash.difference(agents, [agent])
 
-    agent.fear = agent.getFear(peers)
+    agent.fear += (agent.getFear(peers) - agent.fear) * 0.6
     agent.fear += (0.5 - agent.fear) * 0.1
 
     agent.mode = 'idle'
     agent.prey = null
     agent.closest = agent.mapClosest(peers)
 
-    if(i === 0) {
-      // console.log()
-    }
-
     if(agent.fear < 0.2) {
       agent.mode = 'hunt'
     }
 
-    if(agent.fear > 0.6) {
+    if(agent.fear > 0.8) {
       agent.mode = 'run'
     }
 
@@ -50,9 +46,18 @@ module.exports.update = function(input) {
     }
 
     if(agent.mode === 'run') {
-      var peer = lodash.first(agent.closest)
+      var peers = lodash.filter(agent.closest, function(peer) {
+        return peer.mode === 'hunt'
+      })
 
-      agent.rotateAway(peer.position, 0.05)
+      lodash.forEach(peers, function(peer) {
+        var distance = agent.position.distance(peer.position)
+        var boost = Math.max(0, -distance + 0.1) * 0.005
+        var rotationSpeed = Math.pow(distance + 1.2, -10)
+
+        agent.momentum += boost
+        agent.rotateAway(peer.position, rotationSpeed)
+      })
     }
 
     agent.angle += Math.sin(time * 0.1) * 0.001 * (i + 10)
@@ -69,8 +74,8 @@ module.exports.update = function(input) {
           if(agent.momentum > prey.momentum) {
             prey.position.x = Math.random()
             prey.position.y = Math.random()
-            prey.size = 1
             agent.size += 1
+            prey.size = 1
           }
         }
       })
